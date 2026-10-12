@@ -1,0 +1,17 @@
+{
+  "id": "zen-translate-context-menu",
+  "name": "Translate Context Menu",
+  "description": "Adds a '번역하기' item to the page's right-click menu, reopening Firefox's full-page translation panel any time — not just on the first automatic prompt when a page loads.",
+  "scripts": {
+    "translate-context-menu.uc.js": {
+      "include": ["chrome://browser/content/browser.xhtml"]
+    }
+  },
+  "readme": "README.md",
+  "author": "AlfYun",
+  "version": "1.0.0",
+  "tags": ["Zen Browser", "Translate", "Context Menu"],
+  "createdAt": "2026-10-13",
+  "updatedAt": "2026-10-13",
+  "fork": ["zen"]
+}
