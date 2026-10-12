@@ -21,29 +21,22 @@
   const MENU_SEP_ID = "zen-translate-page-sep";
 
   function openTranslationsPanel() {
-    console.log("[TranslateContextMenu] 메뉴 클릭됨 — 호출 시작");
     const panel = globalThis.FullPageTranslationsPanel;
-    console.log("[TranslateContextMenu] FullPageTranslationsPanel =", panel);
-    console.log(
-      "[TranslateContextMenu] translations-button element =",
-      document.getElementById("translations-button")
-    );
     if (!panel) {
       console.error("[TranslateContextMenu] FullPageTranslationsPanel isn't available in this browser.");
       return;
     }
     try {
-      // open() is async; without catching here a failure inside it (e.g. the
-      // translations-button it half-expects not existing) is an unhandled
-      // rejection that logs nowhere obvious and just looks like nothing
-      // happened.
-      Promise.resolve(
-        panel.open({ type: "command", target: null, stopPropagation() {} })
-      )
-        .then(() => console.log("[TranslateContextMenu] open() 완료 (resolved)"))
-        .catch((err) => {
-          console.error("[TranslateContextMenu] Could not open the translations panel:", err);
-        });
+      // openPopup()'s triggerEvent is WebIDL-typed as Event: a plain
+      // duck-typed object fails an "implements interface Event" check deep
+      // inside PanelMultiView, and FullPageTranslationsPanel swallows that
+      // itself, so open() looked like it succeeded while nothing opened. A
+      // real, undispatched Event has target === null, which is exactly what
+      // keeps #openImpl's button.contains(event.target) check false, so it
+      // still anchors the panel on the app-menu button as intended.
+      Promise.resolve(panel.open(new Event("command"))).catch((err) => {
+        console.error("[TranslateContextMenu] Could not open the translations panel:", err);
+      });
     } catch (err) {
       console.error("[TranslateContextMenu] Could not open the translations panel:", err);
     }
