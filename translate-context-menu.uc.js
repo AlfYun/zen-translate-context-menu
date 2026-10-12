@@ -21,7 +21,13 @@
   const MENU_SEP_ID = "zen-translate-page-sep";
 
   function openTranslationsPanel() {
+    console.log("[TranslateContextMenu] 메뉴 클릭됨 — 호출 시작");
     const panel = globalThis.FullPageTranslationsPanel;
+    console.log("[TranslateContextMenu] FullPageTranslationsPanel =", panel);
+    console.log(
+      "[TranslateContextMenu] translations-button element =",
+      document.getElementById("translations-button")
+    );
     if (!panel) {
       console.error("[TranslateContextMenu] FullPageTranslationsPanel isn't available in this browser.");
       return;
@@ -33,9 +39,11 @@
       // happened.
       Promise.resolve(
         panel.open({ type: "command", target: null, stopPropagation() {} })
-      ).catch((err) => {
-        console.error("[TranslateContextMenu] Could not open the translations panel:", err);
-      });
+      )
+        .then(() => console.log("[TranslateContextMenu] open() 완료 (resolved)"))
+        .catch((err) => {
+          console.error("[TranslateContextMenu] Could not open the translations panel:", err);
+        });
     } catch (err) {
       console.error("[TranslateContextMenu] Could not open the translations panel:", err);
     }
