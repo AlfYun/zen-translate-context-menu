@@ -21,11 +21,20 @@
   const MENU_SEP_ID = "zen-translate-page-sep";
 
   function openTranslationsPanel() {
+    const panel = globalThis.FullPageTranslationsPanel;
+    if (!panel) {
+      console.error("[TranslateContextMenu] FullPageTranslationsPanel isn't available in this browser.");
+      return;
+    }
     try {
-      globalThis.FullPageTranslationsPanel?.open({
-        type: "command",
-        target: null,
-        stopPropagation() {},
+      // open() is async; without catching here a failure inside it (e.g. the
+      // translations-button it half-expects not existing) is an unhandled
+      // rejection that logs nowhere obvious and just looks like nothing
+      // happened.
+      Promise.resolve(
+        panel.open({ type: "command", target: null, stopPropagation() {} })
+      ).catch((err) => {
+        console.error("[TranslateContextMenu] Could not open the translations panel:", err);
       });
     } catch (err) {
       console.error("[TranslateContextMenu] Could not open the translations panel:", err);
